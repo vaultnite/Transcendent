@@ -1,22 +1,14 @@
 // The Swift Programming Language
 // https://docs.swift.org/swift-book
 
+import Foundation
 import Hummingbird;
 
-struct URLEncodedRequestContext: ChildRequestContext {
-    typealias ParentContext = BasicRequestContext
-
-    var requestDecoder: URLEncodedFormDecoder {
-        .init()
-    }
+struct ErrorRequestContext: RequestContext {
     var coreContext: CoreRequestContextStorage
 
     init(source: Source) {
         self.coreContext = .init(source: source)
-    }
-
-    init(context: ParentContext) throws {
-        self.coreContext = context.coreContext
     }
 }
 
@@ -25,11 +17,9 @@ struct Transcendent {
     static func main() async throws {
         print("Hello, world!")
 
-        let router = Router(context: BasicRequestContext.self)
+        let router = Router(context: SortedJSONEncoderContext.self)
 
-        router.get("hello") { request, _ -> String in
-            return "Hello there!"
-        }
+        router.add(middleware: ErrorTransformer())
 
         AccountController().addRoutes(to: router.group("account/api", context: URLEncodedRequestContext.self))
 

@@ -1,8 +1,8 @@
 import Foundation
 import Hummingbird
 
-struct AccountController {
-    func addRoutes(to group: RouterGroup<URLEncodedRequestContext>) {
+struct AccountController<Context: RequestContext> {
+    func addRoutes(to group: RouterGroup<Context>) {
         group
             .post(
                 "oauth/token",
